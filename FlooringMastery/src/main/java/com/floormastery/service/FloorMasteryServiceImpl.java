@@ -14,7 +14,7 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
 
     @Autowired
     public FloorMasteryServiceImpl(OrderDao orderDao) {
-
+        this.orderDao = orderDao;
     }
 
     @Override

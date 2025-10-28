@@ -111,4 +111,21 @@ public class Order {
     public void setTotal(BigDecimal total) {
         Total = total;
     }
+
+    @Override
+    public String toString() {
+        return
+                OrderNumber +
+                "," + CustomerName +
+                "," + State +
+                "," + TaxRate +
+                "," + ProductType +
+                "," + Area +
+                "," + CostPerSquareFoot +
+                "," + LaborCostPerSquareFoot +
+                "," + MaterialCost +
+                "," + LaborCost +
+                "," + Tax +
+                "," + Total;
+    }
 }

@@ -2,20 +2,22 @@ package com.floormastery.dao;
 
 import com.floormastery.dao.interfaces.OrderDao;
 import com.floormastery.model.Order;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
 import java.io.FileReader;
 import java.math.BigDecimal;
 import java.time.LocalDate;
-import java.util.List;
-import java.util.Map;
-import java.util.Scanner;
+import java.time.format.DateTimeFormatter;
+import java.util.*;
 
+@Component
 public class OrderDaoImpl implements OrderDao {
     public static final String ORDER_FOLDER = "fileData/Orders";
     public static final String DELIMITER = ",";
-    private Map<LocalDate, Map<Integer, Order>> orders;
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("_MMddyyy");
+    private Map<LocalDate, Map<Integer, Order>> orders = new HashMap<>();
 
     @Override
     public int getNextOrderNumber() {
@@ -44,7 +46,9 @@ public class OrderDaoImpl implements OrderDao {
 
     @Override
     public List<Order> getOrdersForDate(LocalDate date) {
-        return List.of();
+        loadRoster(date);
+        Map<Integer, Order> ordersForDate = orders.get(date);
+        return new ArrayList<>(ordersForDate.values());
     }
 
     @Override
@@ -79,23 +83,30 @@ public class OrderDaoImpl implements OrderDao {
         try {
             scanner = new Scanner(
                     new BufferedReader(
-                            new FileReader(ORDER_FOLDER+"/"+localDate.toString())
+                            new FileReader(ORDER_FOLDER+"/Orders"+localDate.format(FORMATTER)+".txt")
                     )
             );
         } catch (FileNotFoundException e) {
             //THROW CUSTOM ERROR
+            System.out.println(e);
         }
 
         String currentLine;
-        Order currentOrder;
+        Map<Integer, Order> ordersMap = new HashMap<>();
+
+        // Skip the header
+        if (scanner.hasNextLine()) {
+            scanner.nextLine();
+        }
 
         while (scanner.hasNextLine()) {
             currentLine = scanner.nextLine();
-            currentOrder = unmarshallOrder(currentLine);
+            Order currentOrder = unmarshallOrder(currentLine);
             
-            //orders.put(localDate, currentOrder);
+            ordersMap.put(currentOrder.getOrderNumber(), currentOrder);
         }
-        
+
+        orders.put(localDate, ordersMap);
         scanner.close();
     }
 }

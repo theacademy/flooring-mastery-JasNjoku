@@ -30,13 +30,13 @@ public class FloorMasteryView {
     }
 
     public LocalDate getDateInput() {
-        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("dd-MM-yyyy");
-        return io.readDate("Please enter a date (format: dd-MM-yyyy)", formatter);
+        DateTimeFormatter formatter = DateTimeFormatter.ofPattern("MM-dd-yyyy");
+        return io.readDate("Please enter a date (format: MM-dd-yyyy)", formatter);
     }
 
     public void displayOrdersList(List<Order> orderList) {
         for (Order order : orderList) {
-            io.print("Order");
+            io.print(order.toString());
         }
         io.readString("Please hit enter to continue.");
     }

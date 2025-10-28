@@ -52,7 +52,7 @@ public class FloorMasteryController {
             }
             exitMessage();
         } catch (Exception e) {
-            System.out.println("Print error message");
+            System.out.println(e.getMessage());
         }
     }
 
