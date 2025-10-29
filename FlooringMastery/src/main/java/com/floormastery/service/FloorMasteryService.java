@@ -3,6 +3,8 @@ package com.floormastery.service;
 import com.floormastery.dao.exceptions.NoSuchOrderException;
 import com.floormastery.dao.exceptions.PersistenceException;
 import com.floormastery.model.Order;
+import com.floormastery.model.Product;
+import com.floormastery.model.Tax;
 import com.floormastery.service.exceptions.FloorMasteryDataValidationException;
 
 import java.time.LocalDate;
@@ -14,4 +16,6 @@ public interface FloorMasteryService {
     Order editOrder(LocalDate date, int orderNumber, Order newOrder) throws PersistenceException, NoSuchOrderException, FloorMasteryDataValidationException;
     Order removeOrder(LocalDate date, int orderNumber) throws NoSuchOrderException, PersistenceException;
     List<Order> getOrdersForDate(LocalDate date) throws NoSuchOrderException;
+    List<Tax> getTaxes() throws PersistenceException;
+    List<Product> getProducts() throws PersistenceException;
 }

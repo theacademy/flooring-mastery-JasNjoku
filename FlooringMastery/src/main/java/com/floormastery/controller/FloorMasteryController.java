@@ -1,6 +1,7 @@
 package com.floormastery.controller;
 
 import com.floormastery.dao.exceptions.NoSuchOrderException;
+import com.floormastery.dao.exceptions.PersistenceException;
 import com.floormastery.model.Order;
 import com.floormastery.service.FloorMasteryService;
 import com.floormastery.ui.FloorMasteryView;
@@ -35,15 +36,18 @@ public class FloorMasteryController {
                         displayOrders();
                         break;
                     case 2:
-
+                        addOrder();
                         break;
                     case 3:
-
+                        editOrder();
                         break;
                     case 4:
-
+                        removeOrder();
                         break;
                     case 5:
+
+                        break;
+                    case 6:
                         keepGoing = false;
                         break;
                     default:
@@ -57,7 +61,7 @@ public class FloorMasteryController {
         }
     }
 
-    private void displayOrders() throws NoSuchOrderException {
+    private void displayOrders() {
         view.displayAllOrdersBanner();
         boolean hasErrors = false;
 
@@ -73,6 +77,19 @@ public class FloorMasteryController {
                 view.displayErrorMessage(e.getMessage());
             }
         } while (hasErrors);
+    }
+
+    private void addOrder() throws PersistenceException {
+        view.displayAddOrderBanner();
+        Order newOrder = view.getAddOrderInput(service.getTaxes(), service.getProducts());
+    }
+
+    private void editOrder() {
+        view.displayEditOrderBanner();
+    }
+
+    private void removeOrder() {
+        view.displayRemoveOrderBanner();
     }
 
     private int getMenuSelection() {

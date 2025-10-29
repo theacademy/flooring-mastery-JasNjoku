@@ -1,6 +1,8 @@
 package com.floormastery.ui;
 
 import com.floormastery.model.Order;
+import com.floormastery.model.Product;
+import com.floormastery.model.Tax;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
@@ -23,10 +25,15 @@ public class FloorMasteryView {
         io.print("1. Display Orders");
         io.print("2. Add an Order");
         io.print("3. Edit an Order");
-        io.print("4. Export All Data");
-        io.print("5. Quit");
+        io.print("4. Remove an Order");
+        io.print("5. Export All Data");
+        io.print("6. Quit");
 
-        return io.readInt("Please select from the above choices.", 1, 5);
+        return io.readInt("Please select from the above choices.", 1, 6);
+    }
+
+    public Order getAddOrderInput(List<Tax> taxList, List<Product> productList) {
+
     }
 
     public LocalDate getDateInput() {
@@ -44,6 +51,18 @@ public class FloorMasteryView {
     //Banners
     public void displayAllOrdersBanner() {
         io.print("=== Display All Order ===");
+    }
+
+    public void displayAddOrderBanner() {
+        io.print("=== Add Order ===");
+    }
+
+    public void displayEditOrderBanner() {
+        io.print("=== Edit Order ===");
+    }
+
+    public void displayRemoveOrderBanner() {
+        io.print("=== Remove Order ===");
     }
 
     public void displayExitBanner() {

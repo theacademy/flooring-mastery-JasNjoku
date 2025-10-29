@@ -6,6 +6,8 @@ import com.floormastery.dao.interfaces.OrderDao;
 import com.floormastery.dao.interfaces.ProductDao;
 import com.floormastery.dao.interfaces.TaxDao;
 import com.floormastery.model.Order;
+import com.floormastery.model.Product;
+import com.floormastery.model.Tax;
 import com.floormastery.service.exceptions.FloorMasteryDataValidationException;
 import com.floormastery.service.exceptions.FloorMasteryDuplicateOrderNumberException;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -80,6 +82,16 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
     @Override
     public List<Order> getOrdersForDate(LocalDate date) throws NoSuchOrderException {
         return orderDao.getOrdersForDate(date);
+    }
+
+    @Override
+    public List<Tax> getTaxes() throws PersistenceException {
+        return taxDao.getAllTaxes();
+    }
+
+    @Override
+    public List<Product> getProducts() throws PersistenceException {
+        return productDao.getAllProducts();
     }
 
     private void validateOrderData(LocalDate orderDate, Order order) throws FloorMasteryDataValidationException, PersistenceException {
