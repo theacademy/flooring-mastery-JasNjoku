@@ -2,6 +2,7 @@ package com.floormastery.service;
 
 import com.floormastery.dao.exceptions.NoSuchOrderException;
 import com.floormastery.dao.interfaces.OrderDao;
+import com.floormastery.dao.interfaces.TaxDao;
 import com.floormastery.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -12,10 +13,12 @@ import java.util.List;
 @Component
 public class FloorMasteryServiceImpl implements FloorMasteryService {
     private OrderDao orderDao;
+    private TaxDao taxDao;
 
     @Autowired
-    public FloorMasteryServiceImpl(OrderDao orderDao) {
+    public FloorMasteryServiceImpl(OrderDao orderDao, TaxDao taxDao) {
         this.orderDao = orderDao;
+        this.taxDao = taxDao;
     }
 
     @Override
