@@ -11,6 +11,7 @@ import com.floormastery.model.Tax;
 import com.floormastery.service.exceptions.FloorMasteryDataValidationException;
 import com.floormastery.service.exceptions.FloorMasteryDuplicateOrderNumberException;
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.cglib.core.Local;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
@@ -77,6 +78,11 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
     @Override
     public Order removeOrder(LocalDate date, int orderNumber) throws NoSuchOrderException, PersistenceException {
         return orderDao.removeOrder(date, orderNumber);
+    }
+
+    @Override
+    public Order getOrder(LocalDate date, int orderNumber) throws NoSuchOrderException, PersistenceException {
+        return orderDao.getOrder(date, orderNumber);
     }
 
     @Override

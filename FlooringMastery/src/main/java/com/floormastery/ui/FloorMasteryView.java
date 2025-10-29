@@ -70,8 +70,51 @@ public class FloorMasteryView {
         return order;
     }
 
-    public Order getEditOrderInput(List<Tax> taxList, List<Product> productList) {
+    public Order getEditOrderInput(List<Tax> taxList, List<Product> productList, Order order) {
+        String newCustomerName = io.readString("Enter new name or press enter to skip.");
+        String state = io.readString("Enter new state or press enter to skip.");
+        String product = io.readString("Enter new product type or press enter to skip.");
+        BigDecimal area = BigDecimal.valueOf(io.readDouble("Please enter an area or press enter to skip"));
 
+        if (!newCustomerName.isBlank()) {
+            order.setCustomerName(newCustomerName);
+        }
+
+        if (!state.isBlank()) {
+            order.setState(state);
+
+            BigDecimal taxRate = taxList.stream()
+                    .filter(t -> t.getStateAbr().equals(state))
+                    .map(Tax::getTaxRate).findFirst()
+                    .orElse(BigDecimal.ZERO);
+
+            order.setTax(taxRate);
+        }
+
+        if (!product.isBlank()) {
+            order.setProductType(product);
+        }
+
+        if (!area.equals(order.getArea())) {
+            order.setArea(area);
+        }
+
+        return order;
+
+    }
+
+    public boolean getShouldSaveData() {
+        String choice = io.readString("Do you want to save data?");
+        return choice.equalsIgnoreCase("Yes");
+    }
+
+    public void getEditSummary(Order order) {
+        io.print("=== Summary ===");
+        io.print(order.toString());
+    }
+
+    public int getOrderNumber() {
+        return io.readInt("Enter orderNumber.");
     }
 
     public LocalDate getDateInput() {
@@ -105,6 +148,14 @@ public class FloorMasteryView {
 
     public void displayEditSucessBanner() {
         io.print("Order successfully modified. Please hit enter to continue.");
+    }
+
+    public void displayEditNotComplete() {
+        io.print("Data will not be saved.");
+    }
+
+    public void displayNoOrderFoundBanner() {
+        io.print("No order found.");
     }
 
     public void displayRemoveOrderBanner() {

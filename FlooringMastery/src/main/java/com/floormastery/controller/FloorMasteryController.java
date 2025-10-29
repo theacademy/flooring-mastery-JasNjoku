@@ -88,8 +88,28 @@ public class FloorMasteryController {
         view.displayAddSucessBanner();
     }
 
-    private void editOrder() {
+    private void editOrder() throws NoSuchOrderException, PersistenceException, FloorMasteryDataValidationException {
         view.displayEditOrderBanner();
+        LocalDate date = view.getDateInput();
+        int orderNumber = view.getOrderNumber();
+        Order order = service.getOrder(date, orderNumber);
+
+        if (order == null) {
+            view.displayNoOrderFoundBanner();
+            return;
+        }
+
+        Order modifiedOrder = view.getEditOrderInput(service.getTaxes(), service.getProducts(), order);
+        view.getEditSummary(modifiedOrder);
+
+        boolean shouldReplace = view.getShouldSaveData();
+
+        if (shouldReplace) {
+            service.editOrder(date, orderNumber, modifiedOrder);
+            view.displayEditSucessBanner();
+        }
+
+        view.displayEditNotComplete();
     }
 
     private void removeOrder() {
