@@ -19,7 +19,7 @@ public class ProductDaoImpl implements ProductDao {
     public static final String DELIMITER = ",";
 
     public ProductDaoImpl() {
-        PRODUCT_FILE = "fileData/Data/Taxes.txt";
+        PRODUCT_FILE = "fileData/Data/Products.txt";
     }
 
     public ProductDaoImpl(String productFile) {
@@ -35,7 +35,6 @@ public class ProductDaoImpl implements ProductDao {
     private Product unmarshallProduct(String productAsText) {
         String[] productTokens = productAsText.split(DELIMITER);
         Product productFromFile = new Product();
-
         productFromFile.setProductType(productTokens[0]);
         productFromFile.setCostPerSquareFoot(new BigDecimal(productTokens[1]));
         productFromFile.setLaborCostPerSquareFoot(new BigDecimal(productTokens[2]));

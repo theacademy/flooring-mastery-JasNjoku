@@ -47,7 +47,6 @@ public class OrderDaoImpl implements OrderDao {
         //If there is no order create new file
         try {
             loadOrders(date);
-            //System.out.println(orders);
         } catch (PersistenceException e) {
             orders.put(date, new HashMap<>());
         }
@@ -71,11 +70,10 @@ public class OrderDaoImpl implements OrderDao {
             throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
         }
 
-        System.out.println(orders.get(date).get(orderNumber));
         Order order = orders.get(date).get(orderNumber);
 
         if (order == null) {
-            throw new NoSuchOrderException("Order does not exist.");
+            return null;
         }
 
         return order;

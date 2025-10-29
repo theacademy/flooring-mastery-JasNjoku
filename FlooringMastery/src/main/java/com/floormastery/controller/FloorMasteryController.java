@@ -4,6 +4,7 @@ import com.floormastery.dao.exceptions.NoSuchOrderException;
 import com.floormastery.dao.exceptions.PersistenceException;
 import com.floormastery.model.Order;
 import com.floormastery.service.FloorMasteryService;
+import com.floormastery.service.exceptions.FloorMasteryDataValidationException;
 import com.floormastery.ui.FloorMasteryView;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
@@ -79,9 +80,12 @@ public class FloorMasteryController {
         } while (hasErrors);
     }
 
-    private void addOrder() throws PersistenceException {
+    private void addOrder() throws PersistenceException, NoSuchOrderException, FloorMasteryDataValidationException {
         view.displayAddOrderBanner();
         Order newOrder = view.getAddOrderInput(service.getTaxes(), service.getProducts());
+        LocalDate date = view.getDateInput();
+        service.addOrder(date, newOrder);
+        view.displayAddSucessBanner();
     }
 
     private void editOrder() {

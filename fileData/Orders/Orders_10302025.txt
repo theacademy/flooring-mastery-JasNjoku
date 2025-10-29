@@ -1,0 +1,3 @@
+OrderNumber,CustomerName,State,TaxRate,ProductType,Area,CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total
+1,Jason,TX,4.45,Tile,300.0,20.5,30.5,6150.00,9150.00,680.850000,15980.850000
+2,NJOKU,TX,4.45,Laminate,300.0,200.0,200.0,60000.00,60000.00,5340.000000,125340.000000

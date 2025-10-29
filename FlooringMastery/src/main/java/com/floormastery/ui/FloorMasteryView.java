@@ -6,6 +6,7 @@ import com.floormastery.model.Tax;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Component;
 
+import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
 import java.util.List;
@@ -32,7 +33,44 @@ public class FloorMasteryView {
         return io.readInt("Please select from the above choices.", 1, 6);
     }
 
+    public String getProductInput(List<Product> productList) {
+        io.print("=== Select a Product ===");
+        for (int i = 0; i < productList.size(); i++) {
+            System.out.println(i+1 + ". " + productList.get(i).getProductType());
+        }
+        int choice = io.readInt("Please select from the above choices.", 1, productList.size());
+
+        return productList.get(choice-1).getProductType();
+    }
+
     public Order getAddOrderInput(List<Tax> taxList, List<Product> productList) {
+        Order order = new Order();
+        String customerName = io.readString("Please enter customer name");
+        String state = io.readString("Please enter a state as abbreviation");
+        String product = getProductInput(productList);
+        BigDecimal area = BigDecimal.valueOf(io.readDouble("Please enter an area."));
+        BigDecimal costPerSquareFoot = BigDecimal.valueOf(io.readDouble("Please enter cost per square foot."));
+        BigDecimal laborCostPerSquareFoot = BigDecimal.valueOf(io.readDouble("Please enter labor cost per square foot."));
+
+        BigDecimal taxRate = taxList.stream()
+                    .filter(t -> t.getStateAbr().equals(state))
+                    .map(Tax::getTaxRate).findFirst()
+                    .orElse(BigDecimal.ZERO);
+
+        System.out.println(taxRate);
+
+        order.setCustomerName(customerName);
+        order.setState(state);
+        order.setTaxRate(taxRate);
+        order.setProductType(product);
+        order.setArea(area);
+        order.setCostPerSquareFoot(costPerSquareFoot);
+        order.setLaborCostPerSquareFoot(laborCostPerSquareFoot);
+
+        return order;
+    }
+
+    public Order getEditOrderInput(List<Tax> taxList, List<Product> productList) {
 
     }
 
@@ -57,12 +95,24 @@ public class FloorMasteryView {
         io.print("=== Add Order ===");
     }
 
+    public void displayAddSucessBanner() {
+        io.print("Order successfully created. Please hit enter to continue.");
+    }
+
     public void displayEditOrderBanner() {
         io.print("=== Edit Order ===");
     }
 
+    public void displayEditSucessBanner() {
+        io.print("Order successfully modified. Please hit enter to continue.");
+    }
+
     public void displayRemoveOrderBanner() {
         io.print("=== Remove Order ===");
+    }
+
+    public void displayRemoveSucessBanner() {
+        io.print("Order successfully removed. Please hit enter to continue.");
     }
 
     public void displayExitBanner() {

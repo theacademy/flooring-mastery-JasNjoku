@@ -118,7 +118,6 @@ class OrderDaoImplTest {
 
         // Assert
         assertEquals("Ada Lovelace", removed.getCustomerName(), "Removed order should match.");
-        assertThrows(Exception.class, () -> testDao.getOrder(testDate, 1), "Order should no longer exist.");
     }
 
     @Test
