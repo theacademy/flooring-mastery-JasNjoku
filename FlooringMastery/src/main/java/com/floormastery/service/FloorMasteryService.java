@@ -8,4 +8,5 @@ import java.util.List;
 
 public interface FloorMasteryService {
     List<Order> displayOrders(LocalDate date) throws NoSuchOrderException;
+    Order addOrder(LocalDate date, Order order);
 }

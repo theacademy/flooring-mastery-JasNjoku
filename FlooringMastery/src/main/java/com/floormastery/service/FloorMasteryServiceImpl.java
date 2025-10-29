@@ -22,4 +22,18 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
     public List<Order> displayOrders(LocalDate date) throws NoSuchOrderException {
         return orderDao.getOrdersForDate(date);
     }
+
+    @Override
+    public Order addOrder(LocalDate date, Order order) {
+        //check if its already there
+        //validate
+        //add
+        return null;
+    }
+
+
+    private void validateOrderData(Order order) {
+
+    }
+
 }

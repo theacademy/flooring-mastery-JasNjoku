@@ -14,14 +14,32 @@ import java.util.*;
 
 @Component
 public class OrderDaoImpl implements OrderDao {
-    public static final String ORDER_FOLDER = "fileData/Orders";
+    public final String ORDER_FOLDER;
     public static final String DELIMITER = ",";
-    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("_MMddyyy");
+    public static final DateTimeFormatter FORMATTER = DateTimeFormatter.ofPattern("_MMddyyyy");
     private Map<LocalDate, Map<Integer, Order>> orders = new HashMap<>();
 
     @Override
     public int getNextOrderNumber() {
-        return 0;
+        int maxOrderNumber = 0;
+
+        for (Map<Integer, Order> ordersForDate : orders.values()) {
+            for (Integer orderNumber : ordersForDate.keySet()) {
+                if (orderNumber > maxOrderNumber) {
+                    maxOrderNumber = orderNumber;
+                }
+            }
+        }
+
+        return maxOrderNumber + 1;
+    }
+
+    public OrderDaoImpl() {
+        ORDER_FOLDER = "fileData/Orders";
+    }
+
+    public OrderDaoImpl(String orderFolder) {
+        ORDER_FOLDER = orderFolder;
     }
 
     @Override
@@ -29,23 +47,31 @@ public class OrderDaoImpl implements OrderDao {
         //If there is no order create new file
         try {
             loadOrders(date);
+            //System.out.println(orders);
         } catch (PersistenceException e) {
             orders.put(date, new HashMap<>());
         }
 
-        Order newOrder = orders.get(date).put(getNextOrderNumber(), order);
+
+        int orderNum = getNextOrderNumber();
+        order.setOrderNumber(orderNum);
+
+        orders.get(date).put(orderNum, order);
         writeOrdersToFile();
-        return newOrder;
+
+        return order;
     }
 
     @Override
     public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException, NoSuchOrderException {
         try {
             loadOrders(date);
+            //System.out.println(orders);
         } catch (PersistenceException e) {
             throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
         }
 
+        System.out.println(orders.get(date).get(orderNumber));
         Order order = orders.get(date).get(orderNumber);
 
         if (order == null) {
@@ -63,9 +89,9 @@ public class OrderDaoImpl implements OrderDao {
             throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
         }
 
-        Order order = orders.get(date).replace(orderNumber, newOrder);
+        orders.get(date).replace(orderNumber, newOrder);
         writeOrdersToFile();
-        return order;
+        return newOrder;
     }
 
     @Override
@@ -178,10 +204,11 @@ public class OrderDaoImpl implements OrderDao {
                 throw new PersistenceException("Could not save data.", e);
             }
 
-            String orderAsText;
-            List<Order> orderList = this.getOrdersForDate(date);
+            out.println("OrderNumber,CustomerName,State,TaxRate,ProductType,Area," +
+                    "CostPerSquareFoot,LaborCostPerSquareFoot,MaterialCost,LaborCost,Tax,Total");
 
-            for (Order currentOrder: orderList) {
+            String orderAsText;
+            for (Order currentOrder: orders.get(date).values()) {
                 orderAsText = marshallOrder(currentOrder);
                 out.println(orderAsText);
                 out.flush();
