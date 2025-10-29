@@ -99,7 +99,7 @@ public class OrderDaoImpl implements OrderDao {
         try {
             loadOrders(date);
         } catch (PersistenceException e) {
-            throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
+            throw new NoSuchOrderException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
         }
 
         Order order = orders.get(date).remove(orderNumber);

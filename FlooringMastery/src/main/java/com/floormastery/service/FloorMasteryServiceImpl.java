@@ -54,15 +54,33 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
 
         //validate
         validateOrderData(date, order);
+
+        //calculate fields
+        calculateFields(order);
+
         //add
         return orderDao.addOrder(date,order);
+    }
+
+    @Override
+    public Order editOrder(LocalDate date, int orderNumber, Order newOrder) throws PersistenceException, FloorMasteryDataValidationException, NoSuchOrderException {
+        validateOrderData(date, newOrder);
+
+        //recalculate
+        calculateFields(newOrder);
+
+        return orderDao.editOrder(date, orderNumber, newOrder);
+    }
+
+    @Override
+    public Order removeOrder(LocalDate date, int orderNumber) throws NoSuchOrderException, PersistenceException {
+        return orderDao.removeOrder(date, orderNumber);
     }
 
     @Override
     public List<Order> getOrdersForDate(LocalDate date) throws NoSuchOrderException {
         return orderDao.getOrdersForDate(date);
     }
-
 
     private void validateOrderData(LocalDate orderDate, Order order) throws FloorMasteryDataValidationException, PersistenceException {
         //Make sure Date is in the future
@@ -101,4 +119,23 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
 
     }
 
+    private void calculateFields(Order order) {
+        // MaterialCost = (Area * CostPerSquareFoot)
+        BigDecimal materialCost = order.getArea().multiply(order.getCostPerSquareFoot());
+
+        // LaborCost = (Area * LaborCostPerSquareFoot)
+        BigDecimal laborCost = order.getArea().multiply(order.getLaborCostPerSquareFoot());
+
+        // Tax = (MaterialCost + LaborCost) * (TaxRate / 100)
+        BigDecimal subtotal = materialCost.add(laborCost);
+        BigDecimal tax = subtotal.multiply(order.getTaxRate().divide(new BigDecimal("100")));
+
+        // Total = (MaterialCost + LaborCost + Tax)
+        BigDecimal total = subtotal.add(tax);
+
+        order.setMaterialCost(materialCost);
+        order.setLaborCost(laborCost);
+        order.setTax(tax);
+        order.setTotal(total);
+    }
 }

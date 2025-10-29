@@ -11,5 +11,7 @@ import java.util.List;
 public interface FloorMasteryService {
     List<Order> displayOrders(LocalDate date) throws NoSuchOrderException;
     Order addOrder(LocalDate date, Order order) throws NoSuchOrderException, PersistenceException, FloorMasteryDataValidationException;
+    Order editOrder(LocalDate date, int orderNumber, Order newOrder) throws PersistenceException, NoSuchOrderException, FloorMasteryDataValidationException;
+    Order removeOrder(LocalDate date, int orderNumber) throws NoSuchOrderException, PersistenceException;
     List<Order> getOrdersForDate(LocalDate date) throws NoSuchOrderException;
 }
