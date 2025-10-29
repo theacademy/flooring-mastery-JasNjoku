@@ -18,7 +18,7 @@ public class TaxDaoFileImpl implements TaxDao {
     public static final String DELIMITER = ",";
 
     public TaxDaoFileImpl() {
-        TAX_FILE = "fileData/Orders/Data/Taxes.txt";
+        TAX_FILE = "fileData/Data/Taxes.txt";
     }
 
     public TaxDaoFileImpl(String taxFile) {

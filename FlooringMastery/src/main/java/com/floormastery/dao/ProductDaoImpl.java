@@ -4,6 +4,7 @@ import com.floormastery.dao.exceptions.PersistenceException;
 import com.floormastery.dao.interfaces.ProductDao;
 import com.floormastery.model.Product;
 import com.floormastery.model.Tax;
+import org.springframework.stereotype.Component;
 
 import java.io.BufferedReader;
 import java.io.FileNotFoundException;
@@ -11,13 +12,14 @@ import java.io.FileReader;
 import java.math.BigDecimal;
 import java.util.*;
 
+@Component
 public class ProductDaoImpl implements ProductDao {
     private Map<String, Product> products = new HashMap<>();
     public final String PRODUCT_FILE;
     public static final String DELIMITER = ",";
 
     public ProductDaoImpl() {
-        PRODUCT_FILE = "fileData/Orders/Data/Taxes.txt";
+        PRODUCT_FILE = "fileData/Data/Taxes.txt";
     }
 
     public ProductDaoImpl(String productFile) {
