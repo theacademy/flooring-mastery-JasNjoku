@@ -1,5 +1,6 @@
 package com.floormastery.controller;
 
+import com.floormastery.dao.exceptions.NoSuchOrderException;
 import com.floormastery.model.Order;
 import com.floormastery.service.FloorMasteryService;
 import com.floormastery.ui.FloorMasteryView;
@@ -56,11 +57,22 @@ public class FloorMasteryController {
         }
     }
 
-    private void displayOrders() {
+    private void displayOrders() throws NoSuchOrderException {
         view.displayAllOrdersBanner();
-        LocalDate date = view.getDateInput();
-        List<Order> orderList = service.displayOrders(date);
-        view.displayOrdersList(orderList);
+        boolean hasErrors = false;
+
+        do {
+            LocalDate date = view.getDateInput();
+
+            try {
+                List<Order> orderList = service.displayOrders(date);
+                view.displayOrdersList(orderList);
+                hasErrors = false;
+            } catch (NoSuchOrderException e) {
+                hasErrors = true;
+                view.displayErrorMessage(e.getMessage());
+            }
+        } while (hasErrors);
     }
 
     private int getMenuSelection() {

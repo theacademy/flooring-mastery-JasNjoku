@@ -1,5 +1,6 @@
 package com.floormastery.service;
 
+import com.floormastery.dao.exceptions.NoSuchOrderException;
 import com.floormastery.dao.interfaces.OrderDao;
 import com.floormastery.model.Order;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -18,7 +19,7 @@ public class FloorMasteryServiceImpl implements FloorMasteryService {
     }
 
     @Override
-    public List<Order> displayOrders(LocalDate date) {
+    public List<Order> displayOrders(LocalDate date) throws NoSuchOrderException {
         return orderDao.getOrdersForDate(date);
     }
 }

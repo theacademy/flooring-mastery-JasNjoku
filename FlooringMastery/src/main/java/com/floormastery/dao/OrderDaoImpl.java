@@ -1,12 +1,12 @@
 package com.floormastery.dao;
 
+import com.floormastery.dao.exceptions.NoSuchOrderException;
+import com.floormastery.dao.exceptions.PersistenceException;
 import com.floormastery.dao.interfaces.OrderDao;
 import com.floormastery.model.Order;
 import org.springframework.stereotype.Component;
 
-import java.io.BufferedReader;
-import java.io.FileNotFoundException;
-import java.io.FileReader;
+import java.io.*;
 import java.math.BigDecimal;
 import java.time.LocalDate;
 import java.time.format.DateTimeFormatter;
@@ -25,28 +25,70 @@ public class OrderDaoImpl implements OrderDao {
     }
 
     @Override
-    public Order addOrder(Order order) {
-        return null;
+    public Order addOrder(LocalDate date, Order order) throws PersistenceException, NoSuchOrderException {
+        //If there is no order create new file
+        try {
+            loadOrders(date);
+        } catch (PersistenceException e) {
+            orders.put(date, new HashMap<>());
+        }
+
+        Order newOrder = orders.get(date).put(getNextOrderNumber(), order);
+        writeOrdersToFile();
+        return newOrder;
     }
 
     @Override
-    public Order getOrder(Order order) {
-        return null;
+    public Order getOrder(LocalDate date, int orderNumber) throws PersistenceException, NoSuchOrderException {
+        try {
+            loadOrders(date);
+        } catch (PersistenceException e) {
+            throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
+        }
+
+        Order order = orders.get(date).get(orderNumber);
+
+        if (order == null) {
+            throw new NoSuchOrderException("Order does not exist.");
+        }
+
+        return order;
     }
 
     @Override
-    public Order editOrder(Order order) {
-        return null;
+    public Order editOrder(LocalDate date, int orderNumber, Order newOrder) throws PersistenceException, NoSuchOrderException {
+        try {
+            loadOrders(date);
+        } catch (PersistenceException e) {
+            throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
+        }
+
+        Order order = orders.get(date).replace(orderNumber, newOrder);
+        writeOrdersToFile();
+        return order;
     }
 
     @Override
-    public Order removeOrder() {
-        return null;
+    public Order removeOrder(LocalDate date, int orderNumber) throws PersistenceException, NoSuchOrderException {
+        try {
+            loadOrders(date);
+        } catch (PersistenceException e) {
+            throw new PersistenceException("File: Order"+date.format(FORMATTER)+" does not exist.", e);
+        }
+
+        Order order = orders.get(date).remove(orderNumber);
+        writeOrdersToFile();
+        return order;
     }
 
     @Override
-    public List<Order> getOrdersForDate(LocalDate date) {
-        loadRoster(date);
+    public List<Order> getOrdersForDate(LocalDate date) throws NoSuchOrderException {
+        try {
+            loadOrders(date);
+        } catch (PersistenceException e) {
+            throw new NoSuchOrderException("Order"+date.format(FORMATTER)+" does not exist.", e);
+        }
+
         Map<Integer, Order> ordersForDate = orders.get(date);
         return new ArrayList<>(ordersForDate.values());
     }
@@ -77,7 +119,24 @@ public class OrderDaoImpl implements OrderDao {
         return orderFromFile;
     }
 
-    private void loadRoster(LocalDate localDate) {
+    private String marshallOrder(Order order) {
+        String orderAsText = order.getOrderNumber() + DELIMITER
+                + order.getCustomerName() + DELIMITER
+                + order.getState() + DELIMITER
+                + order.getTaxRate() + DELIMITER
+                + order.getProductType() + DELIMITER
+                + order.getArea() + DELIMITER
+                + order.getCostPerSquareFoot() + DELIMITER
+                + order.getLaborCostPerSquareFoot() + DELIMITER
+                + order.getMaterialCost() + DELIMITER
+                + order.getLaborCost() + DELIMITER
+                + order.getTax() + DELIMITER
+                + order.getTotal();
+
+        return orderAsText;
+    }
+
+    private void loadOrders(LocalDate localDate) throws PersistenceException {
         Scanner scanner = null;
 
         try {
@@ -87,8 +146,7 @@ public class OrderDaoImpl implements OrderDao {
                     )
             );
         } catch (FileNotFoundException e) {
-            //THROW CUSTOM ERROR
-            System.out.println(e);
+            throw new PersistenceException("Could not load order data into memory.", e);
         }
 
         String currentLine;
@@ -108,5 +166,28 @@ public class OrderDaoImpl implements OrderDao {
 
         orders.put(localDate, ordersMap);
         scanner.close();
+    }
+
+    private void writeOrdersToFile() throws PersistenceException, NoSuchOrderException {
+        PrintWriter out;
+
+        for (LocalDate date : orders.keySet()) {
+            try {
+                out = new PrintWriter(new FileWriter(ORDER_FOLDER+"/Orders"+date.format(FORMATTER)+".txt"));
+            } catch (IOException e) {
+                throw new PersistenceException("Could not save data.", e);
+            }
+
+            String orderAsText;
+            List<Order> orderList = this.getOrdersForDate(date);
+
+            for (Order currentOrder: orderList) {
+                orderAsText = marshallOrder(currentOrder);
+                out.println(orderAsText);
+                out.flush();
+            }
+
+            out.close();
+        }
     }
 }

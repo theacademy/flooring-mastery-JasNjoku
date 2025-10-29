@@ -128,4 +128,74 @@ public class Order {
                 "," + Tax +
                 "," + Total;
     }
+
+    @Override
+    public int hashCode() {
+        int hash = 7;
+        hash = 89 * hash + this.OrderNumber;
+        hash = 89 * hash + java.util.Objects.hashCode(this.CustomerName);
+        hash = 89 * hash + java.util.Objects.hashCode(this.State);
+        hash = 89 * hash + java.util.Objects.hashCode(this.TaxRate);
+        hash = 89 * hash + java.util.Objects.hashCode(this.ProductType);
+        hash = 89 * hash + java.util.Objects.hashCode(this.Area);
+        hash = 89 * hash + java.util.Objects.hashCode(this.CostPerSquareFoot);
+        hash = 89 * hash + java.util.Objects.hashCode(this.LaborCostPerSquareFoot);
+        hash = 89 * hash + java.util.Objects.hashCode(this.MaterialCost);
+        hash = 89 * hash + java.util.Objects.hashCode(this.LaborCost);
+        hash = 89 * hash + java.util.Objects.hashCode(this.Tax);
+        hash = 89 * hash + java.util.Objects.hashCode(this.Total);
+        return hash;
+    }
+
+    @Override
+    public boolean equals(Object obj) {
+        if (this == obj) {
+            return true;
+        }
+        if (obj == null) {
+            return false;
+        }
+        if (getClass() != obj.getClass()) {
+            return false;
+        }
+        final Order other = (Order) obj;
+        if (this.OrderNumber != other.OrderNumber) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.CustomerName, other.CustomerName)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.State, other.State)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.ProductType, other.ProductType)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.TaxRate, other.TaxRate)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.Area, other.Area)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.CostPerSquareFoot, other.CostPerSquareFoot)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.LaborCostPerSquareFoot, other.LaborCostPerSquareFoot)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.MaterialCost, other.MaterialCost)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.LaborCost, other.LaborCost)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.Tax, other.Tax)) {
+            return false;
+        }
+        if (!java.util.Objects.equals(this.Total, other.Total)) {
+            return false;
+        }
+        return true;
+    }
+
 }
