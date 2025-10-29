@@ -100,20 +100,42 @@ public class FloorMasteryController {
         }
 
         Order modifiedOrder = view.getEditOrderInput(service.getTaxes(), service.getProducts(), order);
-        view.getEditSummary(modifiedOrder);
+        view.getOrderSummary(modifiedOrder);
 
         boolean shouldReplace = view.getShouldSaveData();
 
         if (shouldReplace) {
             service.editOrder(date, orderNumber, modifiedOrder);
             view.displayEditSucessBanner();
+        } else  {
+            view.displaySaveNotComplete();
         }
 
-        view.displayEditNotComplete();
     }
 
-    private void removeOrder() {
+    private void removeOrder() throws NoSuchOrderException, PersistenceException {
         view.displayRemoveOrderBanner();
+
+        LocalDate date = view.getDateInput();
+        int orderNumber = view.getOrderNumber();
+
+        Order order = service.getOrder(date, orderNumber);
+
+        if (order == null) {
+            view.displayNoOrderFoundBanner();
+            return;
+        }
+
+        view.getOrderSummary(order);
+        boolean shouldRemove = view.getShouldRemoveData();
+
+        if (shouldRemove) {
+            service.removeOrder(date, orderNumber);
+            view.displayRemoveSucessBanner();
+        } else {
+            view.displaySaveNotComplete();
+        }
+
     }
 
     private int getMenuSelection() {

@@ -108,7 +108,12 @@ public class FloorMasteryView {
         return choice.equalsIgnoreCase("Yes");
     }
 
-    public void getEditSummary(Order order) {
+    public boolean getShouldRemoveData() {
+        String choice = io.readString("Do you want to remove the data?");
+        return choice.equalsIgnoreCase("Yes");
+    }
+
+    public void getOrderSummary(Order order) {
         io.print("=== Summary ===");
         io.print(order.toString());
     }
@@ -150,7 +155,7 @@ public class FloorMasteryView {
         io.print("Order successfully modified. Please hit enter to continue.");
     }
 
-    public void displayEditNotComplete() {
+    public void displaySaveNotComplete() {
         io.print("Data will not be saved.");
     }
 
