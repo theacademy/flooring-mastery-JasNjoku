@@ -57,7 +57,7 @@ public class FloorMasteryView {
                     .map(Tax::getTaxRate).findFirst()
                     .orElse(BigDecimal.ZERO);
 
-        System.out.println(taxRate);
+//        System.out.println(taxRate);
 
         order.setCustomerName(customerName);
         order.setState(state);
